@@ -1,0 +1,1 @@
+export const light={bg:'#F7F7F5',card:'#FFFFFF',text:'#1F2937',muted:'#6B7280',accent:'#C2410C',border:'#E5E7EB'};export const dark={bg:'#111827',card:'#1F2937',text:'#F9FAFB',muted:'#9CA3AF',accent:'#FB923C',border:'#374151'};

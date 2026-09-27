@@ -1,0 +1,1 @@
+export default [{id:1,name:'Demo Customer',email:'customer@example.com',password:'Customer123',role:'customer'},{id:2,name:'Demo Manager',email:'manager@example.com',password:'Manager123',role:'manager'}];
