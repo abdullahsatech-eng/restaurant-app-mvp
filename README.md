@@ -33,7 +33,6 @@ It contains:
 - `docs/screenshots/` — Application screenshots
 - `PROJECT_MEMORY/` — Project documentation
 - `README.md` — Detailed project documentation
-
 ## Run the Application
 
 Open the project directory:
