@@ -1,0 +1,1 @@
+const router=require('express').Router();const c=require('../controllers/reservationController');const{protect,managerOnly}=require('../middleware/auth');router.get('/availability',c.availability);router.post('/',protect,c.create);router.get('/my',protect,c.mine);router.get('/',protect,managerOnly,c.all);router.patch('/:id',protect,c.update);module.exports=router;

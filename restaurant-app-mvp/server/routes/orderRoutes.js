@@ -1,0 +1,1 @@
+const router=require('express').Router();const c=require('../controllers/orderController');const{protect,managerOnly}=require('../middleware/auth');router.post('/',protect,c.create);router.get('/my',protect,c.mine);router.get('/',protect,managerOnly,c.all);router.patch('/:id/status',protect,managerOnly,c.status);module.exports=router;

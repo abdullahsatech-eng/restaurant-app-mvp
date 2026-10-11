@@ -1,0 +1,1 @@
+const router=require('express').Router();const c=require('../controllers/menuController');const{protect,managerOnly}=require('../middleware/auth');router.get('/',c.list);router.get('/:id',c.get);router.post('/',protect,managerOnly,c.create);router.put('/:id',protect,managerOnly,c.update);router.delete('/:id',protect,managerOnly,c.remove);module.exports=router;
