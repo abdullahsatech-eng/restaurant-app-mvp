@@ -1,0 +1,58 @@
+
+{
+  "info": {
+    "name": "Restaurant App API",
+    "description": "API test collection for Restaurant App Assignment 2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:5000/api/health"
+      }
+    },
+    {
+      "name": "Get All Menu Items",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:5000/api/menu"
+      }
+    },
+    {
+      "name": "Register Customer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Test Customer\",\"email\":\"testcustomer@example.com\",\"password\":\"Test12345\",\"role\":\"customer\"}"
+        },
+        "url": "http://localhost:5000/api/auth/register"
+      }
+    },
+    {
+      "name": "Customer Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"customer@restaurant.app\",\"password\":\"Customer123\"}"
+        },
+        "url": "http://localhost:5000/api/auth/login"
+      }
+    }
+  ]
+}
