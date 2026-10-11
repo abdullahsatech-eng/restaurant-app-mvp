@@ -1,63 +1,94 @@
-# Restaurant App MVP — Assignment 1
+# Restaurant App MVP — Assignments 1 & 2
 
-A frontend-only Restaurant App MVP built with React Native and Expo for Fall 2026.
+A Restaurant App built with React Native and Expo, Node.js, Express, and MongoDB for Fall 2026.
 
-## Run the Application
+## Features
 
-Open the project directory:
+- Browse and search menu items by category.
+- Add menu items to the cart.
+- Register and log in as a customer or manager.
+- Store menu items, users, tables, reservations, and orders in MongoDB.
+- Access restaurant data through REST API endpoints.
+- Support manager operations through protected API routes.
 
-    cd restaurant-app-mvp
+## Technology Stack
 
-Install dependencies:
+- Frontend: React Native, Expo
+- Backend: Node.js, Express
+- Database: MongoDB Atlas, Mongoose
+- Authentication: bcryptjs and JSON Web Tokens (JWT)
 
-    npm install
+## Run the Frontend
 
-Start Expo:
+From the project directory:
 
-    npx expo start
+```bash
+npm install
+npx expo start
+```
 
-## Mock Credentials
+For browser testing, use the web option if supported by the project.
 
-### Customer
+## Run the Backend
 
-- Email: customer@example.com
-- Password: Customer123
+Open a terminal in the `server` directory:
 
-### Restaurant Manager
+```bash
+npm install
+```
 
-- Email: manager@example.com
-- Password: Manager123
+Create a local `.env` file using `.env.example` as a template. Configure `MONGO_URI` and `JWT_SECRET` with your own values. Never commit `.env` or database credentials.
+
+Seed the demo data:
+
+```bash
+npm run seed
+```
+
+Start the API:
+
+```bash
+npm start
+```
+
+The API runs on port 5000 by default. Check its health endpoint at `/api/health`.
+
+## API Endpoints
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/health` | Check server health |
+| GET | `/api/menu` | Retrieve menu items |
+| GET | `/api/menu/:id` | Retrieve one menu item |
+| POST | `/api/auth/register` | Register an account |
+| POST | `/api/auth/login` | Log in |
+| GET/POST/PUT/DELETE | `/api/orders` and related routes | Order operations, subject to implemented routes |
+
+## Demo Credentials
+
+Customer:
+- Email: `customer@restaurant.app`
+- Password: `Customer123`
+
+Manager:
+- Email: `manager@restaurant.app`
+- Password: `Manager123`
+
+These are local demonstration credentials only. Change them before any real deployment.
 
 ## Documentation
 
-For complete project documentation, see:
+- A1 SRS: `A1/SRS.pdf`
+- A1 UML diagrams: `A1/UML/`
+- Screenshots: `docs/screenshots/`
+- A2 documentation and API collection: `A2/` (add the required files here)
 
-[Detailed Project README](./restaurant-app-mvp/README.md)
+## Configuration and Security
 
-## Scope
+Update `BASE_URL` in `src/api/client.js` when changing the API host. Use `http://localhost:5000` for browser testing on the same PC, and your computer's LAN IP for a phone on the same Wi-Fi.
 
-This is a frontend-only academic MVP using mock/local data.
-
-Backend services, real payment processing, external APIs, production authentication, push notifications, and production databases are outside the project scope.
-
-## Screenshots
-
-Application screenshots are available in:
-
-`restaurant-app-mvp/docs/screenshots/`
-
-## UML Diagrams
-
-The five required UML diagrams are available in:
-
-`restaurant-app-mvp/A1/UML/`
-
-## SRS
-
-The Software Requirements Specification is available at:
-
-`restaurant-app-mvp/A1/SRS.pdf`
+Do not commit `.env`, database passwords, or `node_modules`.
 
 ## Academic Project
 
-Developed as a university assignment demonstrating React Native frontend development, software engineering, React Hooks, state management, and application design.
+This project demonstrates React Native development, hooks, state management, REST API integration, MongoDB persistence, and software engineering practices.
