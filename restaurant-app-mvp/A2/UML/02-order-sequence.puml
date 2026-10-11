@@ -1,0 +1,16 @@
+@startuml
+actor Customer
+participant "React Native App" as App
+participant "Express API" as API
+database MongoDB as DB
+Customer -> App: Tap Place Order
+App -> API: POST /api/orders + Bearer token
+API -> API: Verify JWT and validate cart
+API -> DB: Read current menu prices and availability
+DB --> API: Menu item documents
+API -> API: Calculate trusted totals
+API -> DB: Insert Order document
+DB --> API: Saved order
+API --> App: 201 Created + order JSON
+App --> Customer: Show order tracking
+@enduml

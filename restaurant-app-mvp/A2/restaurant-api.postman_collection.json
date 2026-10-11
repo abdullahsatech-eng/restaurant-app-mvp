@@ -1,27 +1,49 @@
-
 {
   "info": {
-    "name": "Restaurant App API",
-    "description": "API test collection for Restaurant App Assignment 2",
+    "name": "Restaurant App API \u2014 A2",
+    "description": "API smoke and validation tests. Set baseUrl, customerToken, managerToken, menuItemId, orderId, reservationId, and tableId variables.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "customerToken",
+      "value": ""
+    },
+    {
+      "key": "managerToken",
+      "value": ""
+    },
+    {
+      "key": "menuItemId",
+      "value": "replace_with_mongodb_id"
+    },
+    {
+      "key": "tableId",
+      "value": "replace_with_mongodb_table_id"
+    },
+    {
+      "key": "orderId",
+      "value": "replace_with_order_id"
+    },
+    {
+      "key": "reservationId",
+      "value": "replace_with_reservation_id"
+    }
+  ],
   "item": [
     {
-      "name": "Health Check",
+      "name": "Health",
       "request": {
         "method": "GET",
-        "url": "http://localhost:5000/api/health"
+        "url": "{{baseUrl}}/api/health"
       }
     },
     {
-      "name": "Get All Menu Items",
-      "request": {
-        "method": "GET",
-        "url": "http://localhost:5000/api/menu"
-      }
-    },
-    {
-      "name": "Register Customer",
+      "name": "Register customer",
       "request": {
         "method": "POST",
         "header": [
@@ -32,13 +54,13 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\"name\":\"Test Customer\",\"email\":\"testcustomer@example.com\",\"password\":\"Test12345\",\"role\":\"customer\"}"
+          "raw": "{\"name\":\"New Customer\",\"email\":\"new@example.com\",\"password\":\"StrongPass1\"}"
         },
-        "url": "http://localhost:5000/api/auth/register"
+        "url": "{{baseUrl}}/api/auth/register"
       }
     },
     {
-      "name": "Customer Login",
+      "name": "Login customer",
       "request": {
         "method": "POST",
         "header": [
@@ -51,7 +73,336 @@
           "mode": "raw",
           "raw": "{\"email\":\"customer@restaurant.app\",\"password\":\"Customer123\"}"
         },
-        "url": "http://localhost:5000/api/auth/login"
+        "url": "{{baseUrl}}/api/auth/login"
+      }
+    },
+    {
+      "name": "Login manager",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"manager@restaurant.app\",\"password\":\"Manager123\"}"
+        },
+        "url": "{{baseUrl}}/api/auth/login"
+      }
+    },
+    {
+      "name": "List menu",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/menu"
+      }
+    },
+    {
+      "name": "Search menu",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/menu?search=chicken"
+      }
+    },
+    {
+      "name": "Filter category",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/menu?category=Mains"
+      }
+    },
+    {
+      "name": "Get menu item",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/menu/{{menuItemId}}"
+      }
+    },
+    {
+      "name": "Create menu item \u2014 manager",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{managerToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Demo Soup\",\"description\":\"Daily soup\",\"price\":350,\"category\":\"Starters\"}"
+        },
+        "url": "{{baseUrl}}/api/menu"
+      }
+    },
+    {
+      "name": "Create menu item \u2014 no token (expected 401)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Unauthorized\",\"price\":100,\"category\":\"Mains\"}"
+        },
+        "url": "{{baseUrl}}/api/menu"
+      }
+    },
+    {
+      "name": "Create menu item \u2014 customer token (expected 403)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customerToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"Forbidden\",\"price\":100,\"category\":\"Mains\"}"
+        },
+        "url": "{{baseUrl}}/api/menu"
+      }
+    },
+    {
+      "name": "Update menu item",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{managerToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"price\":999,\"isAvailable\":false}"
+        },
+        "url": "{{baseUrl}}/api/menu/{{menuItemId}}"
+      }
+    },
+    {
+      "name": "Delete menu item",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{managerToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/menu/{{menuItemId}}"
+      }
+    },
+    {
+      "name": "List tables",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/tables"
+      }
+    },
+    {
+      "name": "Place order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customerToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"items\":[{\"menuItem\":\"{{menuItemId}}\",\"quantity\":2}],\"type\":\"Takeaway\",\"pickupTime\":\"19:00\",\"promoCode\":\"WELCOME10\"}"
+        },
+        "url": "{{baseUrl}}/api/orders"
+      }
+    },
+    {
+      "name": "My orders",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customerToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/orders/my"
+      }
+    },
+    {
+      "name": "All orders \u2014 manager",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{managerToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/orders"
+      }
+    },
+    {
+      "name": "Update order status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{managerToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"status\":\"Preparing\"}"
+        },
+        "url": "{{baseUrl}}/api/orders/{{orderId}}/status"
+      }
+    },
+    {
+      "name": "Check table availability",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/reservations/availability?date=2027-01-15&time=18%3A00&partySize=2",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reservations",
+            "availability"
+          ],
+          "query": [
+            {
+              "key": "date",
+              "value": "2027-01-15"
+            },
+            {
+              "key": "time",
+              "value": "18:00"
+            },
+            {
+              "key": "partySize",
+              "value": "2"
+            }
+          ]
+        },
+        "description": "Returns tables with enough seats that are not booked for the selected date and time. Use a future date."
+      },
+      "response": []
+    },
+    {
+      "name": "Create reservation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customerToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"table\":\"{{tableId}}\",\"date\":\"2027-01-15\",\"time\":\"19:00\",\"partySize\":2,\"contactName\":\"Demo Customer\",\"phone\":\"0300-1234567\"}"
+        },
+        "url": "{{baseUrl}}/api/reservations"
+      }
+    },
+    {
+      "name": "My reservations",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{customerToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/reservations/my"
+      }
+    },
+    {
+      "name": "All reservations \u2014 manager",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{managerToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/reservations"
+      }
+    },
+    {
+      "name": "Accept reservation",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{managerToken}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"status\":\"Accepted\"}"
+        },
+        "url": "{{baseUrl}}/api/reservations/{{reservationId}}"
+      }
+    },
+    {
+      "name": "Invalid menu id (expected 400)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/menu/not-an-object-id"
+      }
+    },
+    {
+      "name": "Unknown route (expected 404)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/does-not-exist"
       }
     }
   ]

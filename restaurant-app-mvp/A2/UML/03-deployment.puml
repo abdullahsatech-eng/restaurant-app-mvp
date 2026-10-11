@@ -1,0 +1,11 @@
+@startuml
+node "Customer / Manager Phone" as phone {
+  artifact "React Native App\n(Expo / Expo Go)" as app
+}
+node "Developer Laptop" as laptop {
+  artifact "Node.js + Express API\nPort 5000" as api
+}
+cloud "MongoDB Atlas\n(or local MongoDB)" as db
+app --> api : HTTP/JSON + JWT\nWi-Fi / LAN
+api --> db : MongoDB connection\nMongoose
+@enduml
