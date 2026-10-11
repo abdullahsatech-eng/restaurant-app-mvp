@@ -1,0 +1,17 @@
+const mongoose = require('mongoose'); const Order = require('../models/Order'); const MenuItem = require('../models/MenuItem'); const Table = require('../models/Table'); const { calculateTotals, canTransitionStatus } = require('../utils/orderRules');
+exports.create = async (req,res,next)=>{try{
+ const {items,type,table,pickupTime,promoCode}=req.body;
+ if(!Array.isArray(items)||!items.length||!['Dine-in','Takeaway'].includes(type))return res.status(400).json({message:'A non-empty cart and valid order type are required.'});
+ if(type==='Dine-in'&&!table)return res.status(400).json({message:'Choose a table for dine-in.'});
+ if(type==='Dine-in'){if(!mongoose.isValidObjectId(table))return res.status(400).json({message:'Invalid table id.'});const selectedTable=await Table.findOne({_id:table,isActive:true});if(!selectedTable)return res.status(400).json({message:'Selected table is not available.'});}
+ if(type==='Takeaway'&&!pickupTime)return res.status(400).json({message:'Choose a pickup time.'});
+ const ids=[...new Set(items.map(x=>String(x.menuItem||x.id)))]; if(ids.some(id=>!mongoose.isValidObjectId(id)))return res.status(400).json({message:'Cart contains an invalid menu item id.'});
+ const dbItems=await MenuItem.find({_id:{$in:ids}}); const map=new Map(dbItems.map(x=>[String(x._id),x])); const normalized=[];
+ for(const line of items){const id=String(line.menuItem||line.id), item=map.get(id), quantity=Number(line.quantity);if(!item)return res.status(400).json({message:'A cart item no longer exists.'});if(!item.isAvailable)return res.status(409).json({message:`${item.name} is currently unavailable.`});if(!Number.isInteger(quantity)||quantity<1||quantity>50)return res.status(400).json({message:'Item quantity must be between 1 and 50.'});normalized.push({menuItem:item._id,name:item.name,unitPrice:item.price,quantity,note:String(line.note||'').slice(0,250)});}
+ // Never trust a client-submitted total: calculate from current database prices to prevent price tampering.
+ let totals;try{totals=calculateTotals(normalized,promoCode);}catch(e){return res.status(e.status||400).json({message:e.message});}const {subtotal,discountPercent,discount,serviceCharge,tax,total,promoCode:normalizedPromo}=totals;
+ const order=await Order.create({user:req.user._id,items:normalized,type,table:type==='Dine-in'?table:undefined,pickupTime:type==='Takeaway'?pickupTime:undefined,promoCode:discountPercent?normalizedPromo:'',subtotal,serviceCharge,tax,discount,total});res.status(201).json(await order.populate('user','name email'));
+ }catch(e){next(e);}};
+exports.mine=async(req,res,next)=>{try{res.json(await Order.find({user:req.user._id}).sort({createdAt:-1}).populate('items.menuItem','name image').populate('table','label seats'));}catch(e){next(e);}};
+exports.all=async(req,res,next)=>{try{res.json(await Order.find().sort({createdAt:-1}).populate('user','name email').populate('table','label'));}catch(e){next(e);}};
+exports.status=async(req,res,next)=>{try{if(!mongoose.isValidObjectId(req.params.id))return res.status(400).json({message:'Invalid order id.'});const order=await Order.findById(req.params.id);if(!order)return res.status(404).json({message:'Order not found.'});if(!canTransitionStatus(order.status,req.body.status))return res.status(400).json({message:`Invalid status transition: ${order.status} to ${req.body.status}.`});order.status=req.body.status;await order.save();res.json(order);}catch(e){next(e);}};
